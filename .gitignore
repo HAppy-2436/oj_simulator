@@ -1,0 +1,9 @@
+# Ignore all JSON configuration/state files
+*.json
+
+# Keep python cache out
+__pycache__/
+
+# Local editor/temp files
+*.swp
+*.tmp
