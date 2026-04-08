@@ -335,7 +335,17 @@ class TaskRunner:
                             if self.event_callback:
                                 self.event_callback("completed_update", completed, target)
 
-                        self.current_working_url = self.decrement_url(self.current_working_url) if is_retro_check else self.increment_url(self.current_working_url)                                                       
+                        self.current_working_url = self.decrement_url(self.current_working_url) if is_retro_check else self.increment_url(self.current_working_url)
+                        
+                        if not is_retro_check:
+                            try:
+                                new_start_id = self.current_working_url.rstrip("/").split("/")[-1]
+                                self.cfg["start_id"] = new_start_id
+                                self.cfg_mgr.save_config(self.cfg)
+                                self.log(f"📝 记录下一题起始题号: {new_start_id}")
+                            except Exception as e:
+                                self.log(f"无法保存下一题题号: {e}")
+
                         self.sim_sleep(self.cfg.get("ac_rest", "30-300"), 30, 300, f"做题完成休眠", 0, is_debug)                           
 
                 except Exception as e:
