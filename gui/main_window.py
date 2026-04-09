@@ -466,6 +466,10 @@ class MainWindow:
                 self.btn_open_settings.config(state="normal")
                 self.btn_debug_check.config(state="normal")
                 self.log_msg("任务执行已停止...")
+            elif event_type == "start_id_update":
+                self.entry_start_id.delete(0, "end")
+                self.entry_start_id.insert(0, str(val1))
+
         self.root.after(0, _handle)
 
     def _start_runner(self, is_retro=False):

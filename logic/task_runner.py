@@ -174,7 +174,13 @@ class TaskRunner:
                                 self.state_mgr.update_next_wake_up(0.0)
                             continue
 
-                        page.goto(self.current_working_url)
+                        try:
+                            page.goto(self.current_working_url, timeout=60000)
+                        except Exception as e:
+                            self.log(f"网络由于系统休眠或其他原因断开或挂起: {e}。等待网络重连...")
+                            time.sleep(10)
+                            continue
+                            
                         time.sleep(3)
                         self.log(f"\n[{completed+1}/{target if not is_retro_check else '补漏'}] 审查题目: {self.current_working_url}")                                                  
                         
@@ -343,6 +349,8 @@ class TaskRunner:
                                 self.cfg["start_id"] = new_start_id
                                 self.cfg_mgr.save_config(self.cfg)
                                 self.log(f"📝 记录下一题起始题号: {new_start_id}")
+                                if self.event_callback:
+                                    self.event_callback("start_id_update", new_start_id, None)
                             except Exception as e:
                                 self.log(f"无法保存下一题题号: {e}")
 
